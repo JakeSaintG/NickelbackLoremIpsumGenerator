@@ -11,7 +11,7 @@ Use this terminal application to generate a one-of-a-kind Nickelback Lorem Ipsum
 #### Special Thanks
 - Nickelback!
 - Code Louisville
-- Advice/QA: Drew Walker and Christine St. Germain
+- Advice/QA: Christine St. Germain
  
 ### Side notes
 - This application is not intended to make a profit or generate revenue. 
