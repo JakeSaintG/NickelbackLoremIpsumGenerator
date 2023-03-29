@@ -16,7 +16,7 @@ class Program
         var json = ReadFile(fileName);
         JObject songs = JObject.Parse(json);
         IList<JToken> results = songs["songs"].Children().ToList();
-        IList<Song> songList = new List<Song>();
+        List<Song> songList = new List<Song>();
         
         foreach (JToken result in results)
         {
