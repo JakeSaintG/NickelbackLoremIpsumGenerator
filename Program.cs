@@ -134,9 +134,7 @@ class Program
             "The odds are almost zero but you may just generate the whole lyrics to Rockstar...wouldn't that be neat?"
         };
         Random r = new Random();
-        int random = r.Next(0, quipList.Length);
-        string quip = quipList[random];
-        return quip;
+        return quipList[r.Next(0, quipList.Length - 1)];
     }
 
     public static string GenerateLine(IList<Song> songList)
