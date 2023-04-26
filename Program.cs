@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using NickelbackLIGenerator.Classes;
 using NickelbackLIGenerator.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ class Program
         JObject songs = JObject.Parse(json);
         IList<JToken> results = songs["songs"].Children().ToList();
         List<Song> songList = new List<Song>();
-        
+
         foreach (JToken result in results)
         {
             Song song = result.ToObject<Song>();
@@ -25,93 +26,73 @@ class Program
         }
 
         Console.WriteLine("Hello and welcome to the Nickelback Lorem Ipsum Generator!");
-        Console.WriteLine(GenerateQuip());
+        Console.WriteLine(QuipHandler.GenerateQuip());
         Console.WriteLine("If you are done, enter \"quit\" to stop searching and go listen to Nickelback.");
 
         while (true)
         {
             Console.Write("\r\n\r\nHow many lines do you want to generate? ");
             string input = Console.ReadLine().ToLower();
-            int parsedInput = 0;
-            string[] quitCmds = { "quit", "stop", "end", "exit", "terminate"};
 
-            //Allows the user to exit the program
-            if (quitCmds.Contains(input))
-            {
-                Console.WriteLine("Goodbye! Thanks for playing!");
+            if (InputHandler.CheckForQuit(input))
                 break;
-            }
 
-            if (!int.TryParse(input, out parsedInput))
+            int parsedInput = InputHandler.ValidateInput(input);
+
+            if (parsedInput != 0) 
             {
-                Console.WriteLine("You may have not entered a number. Please enter an integer!");
-            }
+                Console.WriteLine($"input: {parsedInput}");
 
-            else 
-            {
-                if (parsedInput < 0) //Handles the user entering "0"
-                {
-                    Console.WriteLine("Whoa, buddy. You can't generate negative lines of text.");
-                    Console.WriteLine("Please try again.");
-                }
-                else if (parsedInput == 0) //Handles the user entering a negative number
-                {
-                    Console.WriteLine("Why would you want no lines of Nickelback? They are Canada's gift to the world.");
-                    Console.WriteLine("Please try again.");
-                }
-                else
-                {
-                    Console.Write("On it! Here is your one-of-a-kind Nickelback Lorem Ipsum: \r\n\r\n");
+                Console.Write("On it! Here is your one-of-a-kind Nickelback Lorem Ipsum: \r\n\r\n");
 
-                    string outputText = "";
-                    for (int i = 0; i < parsedInput; i++)
+                string outputText = "";
+                for (int i = 0; i < parsedInput; i++)
+                {
+                    string addText = GenerateLine(songList);
+
+                    //Adds a space between each line added except the first one.
+                    if (i == 0 || outputText.EndsWith(". "))
                     {
-                        string addText = GenerateLine(songList);
-
-                        //Adds a space between each line added except the first one.
-                        if (i == 0 || outputText.EndsWith(". "))
-                        {
-                            outputText += addText;
-                        }
-                        else
-                        {
-                            outputText += " " + addText;
-                        }
-
-                        //Some songs have an "I" as a pause that then goes into the next line. 
-                        //This statement simulates that in the Lorem Ipsum.
-                        if (outputText.EndsWith("I"))
-                        {
-                            outputText += "...";
-                        }
-
-                        //Some of the lines end in special characters.
-                        //Adds a period to every second line added to the text block. 
-                        //Prevents it from adding a period to a weird character.
-                        if (outputText.EndsWith("?") || outputText.EndsWith(")") || outputText.EndsWith(","))
-                        {
-                            //Do nothing. Don't let a period be placed after those specific characters.
-                        }
-                        else if (i % 2 == 0 && i != 0)
-                        {
-                            outputText += ". ";
-                        }
-
-                        //This statement handles adding a period to the end of the entire text block.
-                        //Works to prevent adding a period to a weird character (Note to self: Replace with regex later.)
-                        if (outputText.EndsWith(","))
-                        {
-                            outputText = outputText.Remove(outputText.Length - 1, 1) + ".";
-                        }
-                        else if (i == parsedInput - 1 && !outputText.EndsWith(" ") && !outputText.EndsWith("?"))
-                        {
-                            outputText += ".";
-                        }
-
+                        outputText += addText;
                     }
-                    Console.WriteLine(outputText);
+                    else
+                    {
+                        outputText += " " + addText;
+                    }
+
+                    //Some songs have an "I" as a pause that then goes into the next line. 
+                    //This statement simulates that in the Lorem Ipsum.
+                    if (outputText.EndsWith("I"))
+                    {
+                        outputText += "...";
+                    }
+
+                    //Some of the lines end in special characters.
+                    //Adds a period to every second line added to the text block. 
+                    //Prevents it from adding a period to a weird character.
+                    if (outputText.EndsWith("?") || outputText.EndsWith(")") || outputText.EndsWith(","))
+                    {
+                        //Do nothing. Don't let a period be placed after those specific characters.
+                    }
+                    else if (i % 2 == 0 && i != 0)
+                    {
+                        outputText += ". ";
+                    }
+
+                    //This statement handles adding a period to the end of the entire text block.
+                    //Works to prevent adding a period to a weird character (Note to self: Replace with regex later.)
+                    if (outputText.EndsWith(","))
+                    {
+                        outputText = outputText.Remove(outputText.Length - 1, 1) + ".";
+                    }
+                    else if (i == parsedInput - 1 && !outputText.EndsWith(" ") && !outputText.EndsWith("?"))
+                    {
+                        outputText += ".";
+                    }
+
                 }
-            } 
+                Console.WriteLine(outputText);
+            }
         }
     }
 
@@ -121,20 +102,6 @@ class Program
         {
             return reader.ReadToEnd();
         }
-    }
-
-    public static string GenerateQuip()
-    {
-        string[] quipList = {
-            "I'm glad we have a fellow Nickle-head err...Nickelback enthusiast here.", 
-            "I'm thankful for your enthusiasm! They are Canada's greatest treasure.", 
-            "It's nice to meet another fan! Or...are you just here for some memes?",
-            "Well, I'll be...You look as good as Chad Kroeger's hair!",
-            "Get ready for some good goofs from some of their most popular songs!",
-            "The odds are almost zero but you may just generate the whole lyrics to Rockstar...wouldn't that be neat?"
-        };
-        Random r = new Random();
-        return quipList[r.Next(0, quipList.Length - 1)];
     }
 
     public static string GenerateLine(IList<Song> songList)
