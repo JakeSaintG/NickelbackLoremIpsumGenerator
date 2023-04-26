@@ -41,14 +41,12 @@ class Program
 
             if (parsedInput != 0) 
             {
-                Console.WriteLine($"input: {parsedInput}");
-
-                Console.Write("On it! Here is your one-of-a-kind Nickelback Lorem Ipsum: \r\n\r\n");
+                Console.Write($"On it! Here is your one-of-a-kind Nickelback Lorem Ipsum with {parsedInput} lines: \r\n\r\n");
 
                 string outputText = "";
                 for (int i = 0; i < parsedInput; i++)
                 {
-                    string addText = GenerateLine(songList);
+                    string addText = OutputHandler.GenerateLine(songList);
 
                     //Adds a space between each line added except the first one.
                     if (i == 0 || outputText.EndsWith(". "))
@@ -102,18 +100,5 @@ class Program
         {
             return reader.ReadToEnd();
         }
-    }
-
-    public static string GenerateLine(IList<Song> songList)
-    {
-        Random r = new Random();
-        //Picks a random song (random int out of the length of songs) in the JSON.
-        int randomSong = r.Next(0, songList.Count);
-
-        //Picks a random line (random int out of the length of lines) in the previously selected song.
-        int randomLine = r.Next(0, songList[randomSong].lyrics.Length);
-
-        string songline = songList[randomSong].lyrics[randomLine];
-        return songline;
     }
 }
