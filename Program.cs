@@ -37,60 +37,12 @@ class Program
             if (InputHandler.CheckForQuit(input))
                 break;
 
-            int parsedInput = InputHandler.ValidateInput(input);
+            int linesToGenerate = InputHandler.ValidateInput(input);
 
-            if (parsedInput != 0) 
+            if (linesToGenerate != 0) 
             {
-                Console.WriteLine($"input: {parsedInput}");
-
-                Console.Write("On it! Here is your one-of-a-kind Nickelback Lorem Ipsum: \r\n\r\n");
-
-                string outputText = "";
-                for (int i = 0; i < parsedInput; i++)
-                {
-                    string addText = GenerateLine(songList);
-
-                    //Adds a space between each line added except the first one.
-                    if (i == 0 || outputText.EndsWith(". "))
-                    {
-                        outputText += addText;
-                    }
-                    else
-                    {
-                        outputText += " " + addText;
-                    }
-
-                    //Some songs have an "I" as a pause that then goes into the next line. 
-                    //This statement simulates that in the Lorem Ipsum.
-                    if (outputText.EndsWith("I"))
-                    {
-                        outputText += "...";
-                    }
-
-                    //Some of the lines end in special characters.
-                    //Adds a period to every second line added to the text block. 
-                    //Prevents it from adding a period to a weird character.
-                    if (outputText.EndsWith("?") || outputText.EndsWith(")") || outputText.EndsWith(","))
-                    {
-                        //Do nothing. Don't let a period be placed after those specific characters.
-                    }
-                    else if (i % 2 == 0 && i != 0)
-                    {
-                        outputText += ". ";
-                    }
-
-                    //This statement handles adding a period to the end of the entire text block.
-                    //Works to prevent adding a period to a weird character (Note to self: Replace with regex later.)
-                    if (outputText.EndsWith(","))
-                    {
-                        outputText = outputText.Remove(outputText.Length - 1, 1) + ".";
-                    }
-                    else if (i == parsedInput - 1 && !outputText.EndsWith(" ") && !outputText.EndsWith("?"))
-                    {
-                        outputText += ".";
-                    }
-
-                }
+                Console.Write($"On it! Here is your one-of-a-kind Nickelback Lorem Ipsum with {linesToGenerate} lines: \r\n\r\n");
+                string outputText = OutputHandler.GenerateIpsum(songList, linesToGenerate);
                 Console.WriteLine(outputText);
             }
         }
@@ -102,18 +54,5 @@ class Program
         {
             return reader.ReadToEnd();
         }
-    }
-
-    public static string GenerateLine(IList<Song> songList)
-    {
-        Random r = new Random();
-        //Picks a random song (random int out of the length of songs) in the JSON.
-        int randomSong = r.Next(0, songList.Count);
-
-        //Picks a random line (random int out of the length of lines) in the previously selected song.
-        int randomLine = r.Next(0, songList[randomSong].lyrics.Length);
-
-        string songline = songList[randomSong].lyrics[randomLine];
-        return songline;
     }
 }
