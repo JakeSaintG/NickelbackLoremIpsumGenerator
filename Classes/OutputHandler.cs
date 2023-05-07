@@ -57,7 +57,7 @@ namespace NickelbackLIGenerator.Classes
             }
 
             //Adds a period to every second line added to the text block. 
-            //Prevents it from adding a period to a weird character.
+            //Prevents it from adding a period to a special character.
             if (outputText.EndsWith("?") || outputText.EndsWith(")") || outputText.EndsWith(","))
             {
                 //Do nothing. Don't let a period be placed after those specific characters.
@@ -67,9 +67,13 @@ namespace NickelbackLIGenerator.Classes
                 outputText += ". ";
             }
 
-            //This statement handles adding a period to the end of the entire text block.
-            //Works to prevent adding a period to a weird character (Note to self: Replace with regex later.)
-            if (outputText.EndsWith(","))
+            //Adds period to the end of the entire text block.
+            //Prevents adding a period to a special character.
+            if (!outputText.EndsWith(" ") && !outputText.EndsWith("?"))
+            {
+                outputText += ".";
+            }
+            else if (outputText.EndsWith(","))
             {
                 outputText = outputText.Remove(outputText.Length - 1, 1) + ".";
             }
