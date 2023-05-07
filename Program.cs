@@ -37,18 +37,12 @@ class Program
             if (InputHandler.CheckForQuit(input))
                 break;
 
-            int parsedInput = InputHandler.ValidateInput(input);
+            int linesToGenerate = InputHandler.ValidateInput(input);
 
-            if (parsedInput != 0) 
+            if (linesToGenerate != 0) 
             {
-                Console.Write($"On it! Here is your one-of-a-kind Nickelback Lorem Ipsum with {parsedInput} lines: \r\n\r\n");
-
-                string outputText = "";
-                for (int i = 0; i < parsedInput; i++)
-                {
-                    string addText = OutputHandler.GenerateLine(songList);
-                    outputText += OutputHandler.FormatOutput(addText);
-                }
+                Console.Write($"On it! Here is your one-of-a-kind Nickelback Lorem Ipsum with {linesToGenerate} lines: \r\n\r\n");
+                string outputText = OutputHandler.GenerateIpsum(songList, linesToGenerate);
                 Console.WriteLine(outputText);
             }
         }

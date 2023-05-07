@@ -9,7 +9,20 @@ namespace NickelbackLIGenerator.Classes
 {
     public class OutputHandler
     {
-        public static string GenerateLine(IList<Song> songList)
+        public static string GenerateIpsum(IList<Song> songList, int parsedInput)
+        {
+            string returnText = "";
+
+            for (int currentLineNumber = 0; currentLineNumber < parsedInput; currentLineNumber++)
+            {
+                string pickedLine = PickLine(songList);
+                returnText += FormatOutput(pickedLine, currentLineNumber);
+            }
+
+            return returnText;
+        }
+
+        private static string PickLine(IList<Song> songList) 
         {
             Random r = new Random();
 
@@ -22,10 +35,12 @@ namespace NickelbackLIGenerator.Classes
             return songList[randomSong].lyrics[randomLine];
         }
 
-        public static string FormatOutput(string addText)
+        public static string FormatOutput(string addText, int currentLineNumber)
         {
-            //Adds a space between each line added except the first one.
-            if (i == 0 || outputText.EndsWith(". "))
+            string outputText = "";
+
+            //Adds a space between each line except the first one or lines ending with periods.
+            if (currentLineNumber == 0 || outputText.EndsWith(". "))
             {
                 outputText += addText;
             }
@@ -41,14 +56,13 @@ namespace NickelbackLIGenerator.Classes
                 outputText += "...";
             }
 
-            //Some of the lines end in special characters.
             //Adds a period to every second line added to the text block. 
             //Prevents it from adding a period to a weird character.
             if (outputText.EndsWith("?") || outputText.EndsWith(")") || outputText.EndsWith(","))
             {
                 //Do nothing. Don't let a period be placed after those specific characters.
             }
-            else if (i % 2 == 0 && i != 0)
+            else if (currentLineNumber % 2 == 0 && currentLineNumber != 0)
             {
                 outputText += ". ";
             }
@@ -59,10 +73,8 @@ namespace NickelbackLIGenerator.Classes
             {
                 outputText = outputText.Remove(outputText.Length - 1, 1) + ".";
             }
-            else if (i == parsedInput - 1 && !outputText.EndsWith(" ") && !outputText.EndsWith("?"))
-            {
-                outputText += ".";
-            }
+
+            return outputText;
         }
     }
 }
